@@ -1,5 +1,7 @@
 const fs = require("fs");
 const readlineSync = require("readline-sync");
+const { Command } = require("commander");
+const program = new Command();
 
 const getDirectoryPath = () => {
   let directoryPath = null;
@@ -22,4 +24,12 @@ const getDirectoryPath = () => {
 };
 
 const dirPath = getDirectoryPath();
-console.log(dirPath);
+
+program
+  .option("-c, --convert-to <type>", "change image type")
+  .parse(process.argv);
+
+const options = program.opts();
+console.log(options);
+
+if (options.convertTo) console.log(options.convertTo);
