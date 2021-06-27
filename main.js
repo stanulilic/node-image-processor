@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 const readlineSync = require("readline-sync");
 const { Command } = require("commander");
 const program = new Command();
@@ -23,6 +24,20 @@ const getDirectoryPath = () => {
   return directoryPath;
 };
 
+const getFileExtension = (filename) => {
+  return path.extname(filename).split(".").pop().toLowerCase();
+};
+const convertImageType = (image_type, dirPath) => {
+  const filenames = fs.readdirSync(dirPath);
+  filenames
+    .filter((filename) => {
+      return ["jpg", "jpeg", "png", "webp", "tiff", "gif", "svg"].includes(
+        getFileExtension(filename)
+      );
+    })
+    .map((filename) => console.log(filename));
+};
+
 const dirPath = getDirectoryPath();
 
 program
@@ -30,6 +45,5 @@ program
   .parse(process.argv);
 
 const options = program.opts();
-console.log(options);
 
-if (options.convertTo) console.log(options.convertTo);
+if (options.convertTo) convertImageType(options.convertTo, dirPath);
