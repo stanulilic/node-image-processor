@@ -48,21 +48,20 @@ const getSupportedFiles = (directoryPath) => {
     );
   });
 };
-const convertImageType = (image_type, dirPath) => {
-  createOutputDir(dirPath);
+const convertImageType = (imageType, dirPath) => {
   console.log(
     `Converting ${
       getSupportedFiles(dirPath).length
-    } images to ${image_type}\nthe images will be saved in ${dirPath}/output`
+    } images to ${imageType}\nthe images will be saved in ${dirPath}/output`
   );
   getSupportedFiles(dirPath).forEach(async (filename) => {
     try {
       await sharp(`${dirPath}/${filename}`)
-        .toFormat(image_type)
+        .toFormat(imageType)
         .toFile(
           `${dirPath}/output/${getFileNameWithoutExtension(
             filename
-          )}${image_type}`
+          )}${imageType}`
         );
     } catch (error) {
       console.log(error);
@@ -78,4 +77,5 @@ program
 
 const options = program.opts();
 
+createOutputDir(dirPath);
 if (options.convertTo) convertImageType(options.convertTo, dirPath);
