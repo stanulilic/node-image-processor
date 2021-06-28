@@ -38,28 +38,30 @@ const getFileExtension = (filename) => {
 const getFileNameWithoutExtension = (filename) => {
   return path.basename(filename, getFileExtension(filename));
 };
+
+const getSupportedFiles = (directoryPath) => {
+  const filenames = fs.readdirSync(directoryPath);
+  return filenames.filter((filename) => {
+    return ["jpg", "jpeg", "png", "webp", "tiff", "gif", "svg"].includes(
+      getFileExtension(filename)
+    );
+  });
+};
 const convertImageType = (image_type, dirPath) => {
-  const filenames = fs.readdirSync(dirPath);
   createOutputDir(dirPath);
-  filenames
-    .filter((filename) => {
-      return ["jpg", "jpeg", "png", "webp", "tiff", "gif", "svg"].includes(
-        getFileExtension(filename)
-      );
-    })
-    .forEach(async (filename) => {
-      try {
-        await sharp(`${dirPath}/${filename}`)
-          .toFormat(image_type)
-          .toFile(
-            `${dirPath}/output/${getFileNameWithoutExtension(
-              filename
-            )}${image_type}`
-          );
-      } catch (error) {
-        console.log(error);
-      }
-    });
+  getSupportedFiles(dirPath).forEach(async (filename) => {
+    try {
+      await sharp(`${dirPath}/${filename}`)
+        .toFormat(image_type)
+        .toFile(
+          `${dirPath}/output/${getFileNameWithoutExtension(
+            filename
+          )}${image_type}`
+        );
+    } catch (error) {
+      console.log(error);
+    }
+  });
 };
 
 const dirPath = getDirectoryPath();
