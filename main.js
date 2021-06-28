@@ -24,12 +24,23 @@ const getDirectoryPath = () => {
 
   return directoryPath;
 };
+const createOutputDir = (dirPath) => {
+  const outputDir = `${dirPath}/output`;
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir);
+  }
+};
 
 const getFileExtension = (filename) => {
   return path.extname(filename).split(".").pop().toLowerCase();
 };
+
+const getFileNameWithoutExtension = (filename) => {
+  return path.basename(filename, getFileExtension(filename));
+};
 const convertImageType = (image_type, dirPath) => {
   const filenames = fs.readdirSync(dirPath);
+  createOutputDir(dirPath);
   filenames
     .filter((filename) => {
       return ["jpg", "jpeg", "png", "webp", "tiff", "gif", "svg"].includes(
@@ -38,8 +49,13 @@ const convertImageType = (image_type, dirPath) => {
     })
     .forEach(async (filename) => {
       try {
-        const h = await sharp(`${dirPath}/${filename}`).metadata();
-        console.log(h);
+        await sharp(`${dirPath}/${filename}`)
+          .toFormat(image_type)
+          .toFile(
+            `${dirPath}/output/${getFileNameWithoutExtension(
+              filename
+            )}${image_type}`
+          );
       } catch (error) {
         console.log(error);
       }
