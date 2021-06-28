@@ -13,3 +13,16 @@ For example, to convert all images to `jpg`, the command will be as follows:
 ```
 node main.js --convert-to jpg
 ```
+
+## Resizing Images
+
+Syntax
+```
+node main.js --resize-to <width> <height>
+```
+You must provide `resize-to` option followed by two arguments: `width` and `height`.
+
+For example, to resize all images to 300x330, do the following: 
+```
+node main.js --resize-to 300 330
+```
