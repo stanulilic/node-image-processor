@@ -4,6 +4,7 @@ const sharp = require("sharp");
 const readlineSync = require("readline-sync");
 const { Command } = require("commander");
 const program = new Command();
+const fsExtra = require("fs-extra");
 
 const getDirectoryPath = () => {
   let directoryPath = null;
@@ -26,9 +27,9 @@ const getDirectoryPath = () => {
 };
 const createOutputDir = (dirPath) => {
   const outputDir = `${dirPath}/output`;
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir);
-  }
+  fs.existsSync(outputDir)
+    ? fsExtra.emptyDirSync(outputDir)
+    : fs.mkdirSync(outputDir);
 };
 
 const getFileExtension = (filename) => {
@@ -49,6 +50,11 @@ const getSupportedFiles = (directoryPath) => {
 };
 const convertImageType = (image_type, dirPath) => {
   createOutputDir(dirPath);
+  console.log(
+    `Converting ${
+      getSupportedFiles(dirPath).length
+    } images to ${image_type}\nthe images will be saved in ${dirPath}/output`
+  );
   getSupportedFiles(dirPath).forEach(async (filename) => {
     try {
       await sharp(`${dirPath}/${filename}`)
