@@ -69,13 +69,34 @@ const convertImageType = (imageType, dirPath) => {
   });
 };
 
+const resizeImages = (width, height, dirPath) => {
+  console.log(
+    `Resize ${
+      getSupportedFiles(dirPath).length
+    } images by ${width}x${height}\nthe images will be saved in ${dirPath}/output`
+  );
+  getSupportedFiles(dirPath).forEach(async (filename) => {
+    try {
+      await sharp(`${dirPath}/${filename}`)
+        .resize(width, height)
+        .toFile(`${dirPath}/output/${filename}`);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
 const dirPath = getDirectoryPath();
 
 program
-  .option("-c, --convert-to <type>", "change image type")
+  .option("-c, --convert-to <type>", "change image types")
+  .option("-r, --resize-to <imageSize...>", "resize images")
   .parse(process.argv);
 
 const options = program.opts();
 
 createOutputDir(dirPath);
 if (options.convertTo) convertImageType(options.convertTo, dirPath);
+if (options.resizeTo) {
+  [width, height] = options.resizeTo;
+  resizeImages(parseInt(width), parseInt(height), dirPath);
+}
