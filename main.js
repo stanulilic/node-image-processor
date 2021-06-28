@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const sharp = require("sharp");
 const readlineSync = require("readline-sync");
 const { Command } = require("commander");
 const program = new Command();
@@ -35,7 +36,14 @@ const convertImageType = (image_type, dirPath) => {
         getFileExtension(filename)
       );
     })
-    .map((filename) => console.log(filename));
+    .forEach(async (filename) => {
+      try {
+        const h = await sharp(`${dirPath}/${filename}`).metadata();
+        console.log(h);
+      } catch (error) {
+        console.log(error);
+      }
+    });
 };
 
 const dirPath = getDirectoryPath();
