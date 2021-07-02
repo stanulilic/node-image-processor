@@ -78,7 +78,7 @@ const resizeImages = (width, height, dirPath) => {
   getSupportedFiles(dirPath).forEach(async (filename) => {
     try {
       await sharp(`${dirPath}/${filename}`)
-        .resize(width, height)
+        .resize(width, height, { fit: "contain" })
         .toFile(`${dirPath}/output/${filename}`);
     } catch (error) {
       console.log(error);
